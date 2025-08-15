@@ -1,0 +1,166 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ project.title }} - Vedang Deshmukh{% endblock %}
+
+{% block content %}
+<!-- Project Header -->
+<section class="py-5" style="background: var(--secondary-bg);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8" data-aos="fade-up">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-primary">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'projects' %}" class="text-primary">Projects</a></li>
+                        <li class="breadcrumb-item active text-secondary">{{ project.title }}</li>
+                    </ol>
+                </nav>
+
+                <h1 class="display-5 fw-bold mb-3">{{ project.title }}</h1>
+                <p class="lead text-secondary">{{ project.short_description }}</p>
+
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    {% if project.github_url %}
+                    <a href="{{ project.github_url }}" class="btn btn-outline-primary" target="_blank">
+                        <i class="fab fa-github me-2"></i>View Code
+                    </a>
+                    {% endif %}
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i>Live Demo
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tech in project.technologies.all %}
+                    <span class="tech-tag">{{ tech.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-4" data-aos="fade-left">
+                <div class="card-dark p-4">
+                    <h6 class="text-primary mb-3">Project Details</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Status:</strong>
+                            <span class="badge bg-{% if project.status == 'completed' %}success{% elif project.status == 'in_progress' %}warning{% else %}info{% endif %} ms-2">
+                                {{ project.get_status_display }}
+                            </span>
+                        </li>
+                        <li class="mb-2"><strong>Created:</strong> {{ project.created_at|date:"M d, Y" }}</li>
+                        {% if project.updated_at != project.created_at %}
+                        <li class="mb-2"><strong>Updated:</strong> {{ project.updated_at|date:"M d, Y" }}</li>
+                        {% endif %}
+                        <li class="mb-2"><strong>Technologies:</strong> {{ project.technologies.count }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Project Image -->
+                {% if project.image %}
+                <div class="mb-5" data-aos="fade-up">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}"
+                         class="img-fluid rounded shadow-lg">
+                </div>
+                {% endif %}
+
+                <!-- Project Description -->
+                <div class="mb-5" data-aos="fade-up">
+                    <h3 class="mb-4">About This Project</h3>
+                    <div class="text-secondary project-description">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Technologies Used -->
+                <div class="mb-5" data-aos="fade-up">
+                    <h3 class="mb-4">Technologies Used</h3>
+                    <div class="row">
+                        {% for tech in project.technologies.all %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card-dark p-3">
+                                <div class="d-flex align-items-center">
+                                    {% if tech.icon %}
+                                    <i class="{{ tech.icon }} fa-2x text-primary me-3"></i>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-1">{{ tech.name }}</h6>
+                                        <small class="text-secondary">{{ tech.get_category_display }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Related Projects -->
+                {% if related_projects %}
+                <div class="mb-5" data-aos="fade-left">
+                    <h4 class="mb-4">Related Projects</h4>
+                    {% for related in related_projects %}
+                    <div class="card-dark mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ related.title }}</h6>
+                            <p class="card-text text-secondary small">{{ related.short_description|truncatewords:10 }}</p>
+                            <a href="{{ related.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                                View Project <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Share Project -->
+                <div class="card-dark p-4" data-aos="fade-left">
+                    <h6 class="mb-3">Share This Project</h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://twitter.com/intent/tweet?text={{ project.title }}&url={{ request.build_absolute_uri }}"
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <button onclick="copyToClipboard('{{ request.build_absolute_uri }}')"
+                                class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show success message
+        const btn = event.target;
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+            btn.innerHTML = originalIcon;
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,451 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Contact - Vedang Deshmukh{% endblock %}
+
+{% block content %}
+<!-- Contact Header -->
+<section class="py-5" style="background: var(--secondary-bg);">
+    <div class="container">
+        <div class="text-center" data-aos="fade-up">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-paper-plane me-3 text-primary"></i>Let's Connect
+            </h1>
+            <p class="lead text-secondary mb-0">
+                Have a project in mind? Want to collaborate? Or just want to say hello?
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-lg-5 mb-5" data-aos="fade-right">
+                <div class="contact-info">
+                    <h3 class="mb-4">
+                        <i class="fas fa-user-circle me-2 text-primary"></i>Get in Touch
+                    </h3>
+                    <p class="text-secondary mb-4">
+                        I'm always excited to discuss new opportunities, collaborate on projects,
+                        or help with AI/ML and web development questions. Don't hesitate to reach out!
+                    </p>
+
+                    <!-- Contact Details -->
+                    <div class="contact-details">
+                        <div class="contact-item mb-4" data-aos="fade-up" data-aos-delay="100">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon">
+                                    <i class="fas fa-envelope fa-lg text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Email</h6>
+                                    <a href="mailto:{% if profile %}{{ profile.email }}{% else %}vedangdeshmukh777@gmail.com{% endif %}"
+                                       class="text-secondary text-decoration-none">
+                                        {% if profile %}{{ profile.email }}{% else %}vedangdeshmukh777@gmail.com{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-item mb-4" data-aos="fade-up" data-aos-delay="200">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon">
+                                    <i class="fab fa-github fa-lg text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">GitHub</h6>
+                                    <a href="{% if profile %}{{ profile.github_url }}{% else %}https://github.com/vedang18200{% endif %}"
+                                       target="_blank" class="text-secondary text-decoration-none">
+                                        {% if profile %}{{ profile.github_url|slice:"19:" }}{% else %}vedang18200{% endif %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if profile.linkedin_url %}
+                        <div class="contact-item mb-4" data-aos="fade-up" data-aos-delay="300">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon">
+                                    <i class="fab fa-linkedin fa-lg text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">LinkedIn</h6>
+                                    <a href="{{ profile.linkedin_url }}" target="_blank"
+                                       class="text-secondary text-decoration-none">
+                                        Connect with me
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if profile.location %}
+                        <div class="contact-item mb-4" data-aos="fade-up" data-aos-delay="400">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt fa-lg text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-1">Location</h6>
+                                    <span class="text-secondary">{{ profile.location }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Response Time -->
+                    <div class="response-info p-4 mt-4" style="background: var(--card-bg); border-radius: 15px;"
+                         data-aos="fade-up" data-aos-delay="500">
+                        <h6 class="text-primary mb-2">
+                            <i class="fas fa-clock me-2"></i>Response Time
+                        </h6>
+                        <p class="text-secondary mb-0 small">
+                            I typically respond within 24 hours. For urgent matters,
+                            feel free to send a follow-up email with "URGENT" in the subject line.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="contact-form-wrapper">
+                    <div class="card-dark p-4">
+                        <h4 class="mb-4">
+                            <i class="fas fa-paper-plane me-2 text-primary"></i>Send a Message
+                        </h4>
+
+                        <!-- Display Messages -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show"
+                                     role="alert" data-aos="fade-down">
+                                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Contact Form -->
+                        <form method="post" class="contact-form" data-aos="fade-up" data-aos-delay="200">
+                            {% csrf_token %}
+                            {% crispy form %}
+                        </form>
+
+                        <!-- Alternative Contact Methods -->
+                        <div class="alternative-contact mt-4 pt-4 border-top" style="border-color: var(--border-color)!"
+                             data-aos="fade-up" data-aos-delay="400">
+                            <h6 class="text-secondary mb-3">Or connect directly:</h6>
+                            <div class="d-flex gap-3">
+                                <a href="mailto:{% if profile %}{{ profile.email }}{% else %}vedangdeshmukh777@gmail.com{% endif %}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-envelope me-1"></i>Email
+                                </a>
+                                <a href="{% if profile %}{{ profile.github_url }}{% else %}https://github.com/vedang18200{% endif %}"
+                                   target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fab fa-github me-1"></i>GitHub
+                                </a>
+                                {% if profile.linkedin_url %}
+                                <a href="{{ profile.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5" style="background: var(--secondary-bg);">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h3 class="fw-bold">
+                <i class="fas fa-question-circle me-2 text-primary"></i>Frequently Asked Questions
+            </h3>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion accordion-dark" id="faqAccordion">
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq1">
+                                <i class="fas fa-project-diagram me-2 text-primary"></i>
+                                What types of projects do you work on?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                I specialize in AI/ML projects, web development, and IoT solutions.
+                                This includes machine learning models, chatbots, face recognition systems,
+                                Django web applications, and smart IoT devices. I'm always open to
+                                exploring new technologies and challenging projects!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq2">
+                                <i class="fas fa-handshake me-2 text-primary"></i>
+                                Are you available for collaboration?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Absolutely! I'm always excited to collaborate with fellow developers,
+                                students, and organizations. Whether it's contributing to open source,
+                                joining a project team, or working on academic research, I'm interested
+                                in meaningful collaborations.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq3">
+                                <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                                Do you provide mentoring or tutoring?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! I enjoy helping fellow students and beginners in programming,
+                                AI/ML, and web development. I can provide guidance on project ideas,
+                                code reviews, and learning resources. Feel free to reach out if you
+                                need help with your coding journey.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="400">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq4">
+                                <i class="fas fa-clock me-2 text-primary"></i>
+                                What's your typical project timeline?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Project timelines vary based on complexity and scope. Small projects
+                                might take a few days to weeks, while larger applications could take
+                                several months. I always provide realistic timelines and keep you
+                                updated throughout the development process.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--gradient-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-bg);
+    }
+
+    .contact-item {
+        padding: 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+        background: var(--card-bg);
+        transform: translateX(10px);
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-form .btn {
+        padding: 15px 40px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 50px;
+    }
+
+    /* Accordion Dark Theme */
+    .accordion-dark .accordion-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .accordion-dark .accordion-button {
+        background: transparent;
+        color: var(--text-primary);
+        border: none;
+        font-weight: 500;
+        padding: 1.25rem;
+    }
+
+    .accordion-dark .accordion-button:not(.collapsed) {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: none;
+    }
+
+    .accordion-dark .accordion-button:focus {
+        box-shadow: none;
+        border: none;
+    }
+
+    .accordion-dark .accordion-body {
+        background: var(--card-bg);
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Form animations */
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+        transform: scale(1.02);
+        transition: transform 0.2s ease;
+    }
+
+    /* Loading state for form submission */
+    .form-submitting {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .form-submitting .btn {
+        position: relative;
+    }
+
+    .form-submitting .btn::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactForm = document.querySelector('.contact-form');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('input[type="submit"]');
+                const formWrapper = this.closest('.contact-form-wrapper');
+
+                // Add loading state
+                formWrapper.classList.add('form-submitting');
+                submitBtn.value = 'Sending...';
+
+                // Add success animation on form submission
+                setTimeout(() => {
+                    if (!document.querySelector('.alert-danger')) {
+                        // If no error, show success animation
+                        const successDiv = document.createElement('div');
+                        successDiv.innerHTML = `
+                            <div class="text-center py-4">
+                                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                <h5>Message Sent!</h5>
+                                <p class="text-secondary">Thank you for reaching out. I'll get back to you soon!</p>
+                            </div>
+                        `;
+
+                        // Replace form with success message temporarily
+                        const originalForm = this.innerHTML;
+                        this.innerHTML = successDiv.innerHTML;
+
+                        // Restore form after 3 seconds
+                        setTimeout(() => {
+                            this.innerHTML = originalForm;
+                            formWrapper.classList.remove('form-submitting');
+                        }, 3000);
+                    } else {
+                        formWrapper.classList.remove('form-submitting');
+                        submitBtn.value = 'Send Message';
+                    }
+                }, 1000);
+            });
+        }
+
+        // Add floating animation to contact icons
+        const contactIcons = document.querySelectorAll('.contact-icon');
+        contactIcons.forEach((icon, index) => {
+            icon.style.animationDelay = `${index * 0.2}s`;
+            icon.classList.add('floating-icon');
+        });
+
+        // Real-time form validation
+        const formInputs = document.querySelectorAll('.form-control-dark');
+        formInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+    });
+
+    // Add floating animation CSS
+    const floatingStyle = document.createElement('style');
+    floatingStyle.textContent = `
+        .floating-icon {
+            animation: float-gentle 3s ease-in-out infinite;
+        }
+
+        @keyframes float-gentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .is-valid {
+            border-color: #28a745 !important;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+    `;
+    document.head.appendChild(floatingStyle);
+</script>
+{% endblock %}
