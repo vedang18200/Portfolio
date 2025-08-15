@@ -3,9 +3,12 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
+<<<<<<< HEAD
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+=======
+>>>>>>> 2eea26b0e2cb65587f84c6f1be11d35575c36879
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -98,7 +101,13 @@ if os.path.exists(BASE_DIR / 'static'):
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Cloudinary configuration for media files
+<<<<<<< HEAD
 
+=======
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+>>>>>>> 2eea26b0e2cb65587f84c6f1be11d35575c36879
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
@@ -110,8 +119,13 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Media files
+<<<<<<< HEAD
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
+=======
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+>>>>>>> 2eea26b0e2cb65587f84c6f1be11d35575c36879
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
