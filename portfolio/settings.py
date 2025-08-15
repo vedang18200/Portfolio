@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 from decouple import config
-
+import dj_database_url  # Add this line
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='your-secret-key-here')
