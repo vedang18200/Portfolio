@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'image_preview', 'image_url_debug', 'updated_at']
+    list_display = ['name', 'email', 'image_preview']  # Removed updated_at
     fields = [
         'name', 'tagline', 'bio', 'email', 'location',
         'profile_image',
