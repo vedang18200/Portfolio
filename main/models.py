@@ -2,6 +2,7 @@
 from django.db import models
 from django.urls import reverse
 from django.core.validators import URLValidator
+from cloudinary.models import CloudinaryField  # ADD THIS IMPORT
 import uuid
 
 class Skill(models.Model):
@@ -38,7 +39,22 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     short_description = models.CharField(max_length=250, help_text="Brief description for cards")
     description = models.TextField(help_text="Detailed project description")
-    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+
+    # CHANGE: Replace ImageField with CloudinaryField
+    image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True,
+        transformation={
+            'width': 800,
+            'height': 600,
+            'crop': 'fill',
+            'quality': 'auto',
+            'format': 'webp'
+        },
+        folder='portfolio/projects'
+    )
+
     github_url = models.URLField(blank=True, validators=[URLValidator()])
     live_url = models.URLField(blank=True, validators=[URLValidator()], help_text="Live demo URL")
     technologies = models.ManyToManyField(Skill, blank=True, related_name='projects')
@@ -59,7 +75,15 @@ class Project(models.Model):
 
 class Resume(models.Model):
     title = models.CharField(max_length=100, default="My Resume")
-    file = models.FileField(upload_to='resume/')
+
+    # CHANGE: Replace FileField with CloudinaryField for raw files
+    file = CloudinaryField(
+        'raw',
+        resource_type='raw',
+        folder='portfolio/documents',
+        allowed_formats=['pdf', 'doc', 'docx']
+    )
+
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
@@ -93,7 +117,23 @@ class Profile(models.Model):
     name = models.CharField(max_length=100, default="Vedang Deshmukh")
     tagline = models.CharField(max_length=200, default="Aspiring AIML Student and Developer")
     bio = models.TextField(default="I am a second-year Computer Science student specializing in Artificial Intelligence and Machine Learning.")
-    profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
+
+    # CHANGE: Replace ImageField with CloudinaryField
+    profile_image = CloudinaryField(
+        'image',
+        blank=True,
+        null=True,
+        transformation={
+            'width': 500,
+            'height': 500,
+            'crop': 'fill',
+            'gravity': 'face',  # Focus on face when cropping
+            'quality': 'auto',
+            'format': 'webp'
+        },
+        folder='portfolio/profile'
+    )
+
     email = models.EmailField(default="vedangdeshmukh777@gmail.com")
     github_url = models.URLField(default="https://github.com/vedang18200")
     linkedin_url = models.URLField(blank=True)

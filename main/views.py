@@ -1,4 +1,5 @@
-# main/views.py
+# main/views.py - Fixed version for Cloudinary
+import requests
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from django.contrib import messages
@@ -137,27 +138,32 @@ def contact(request):
     return render(request, 'main/contact.html', context)
 
 def download_resume(request):
-    """Download the latest active resume"""
+    """Download the latest active resume - FIXED for Cloudinary"""
     try:
         resume = Resume.objects.filter(is_active=True).first()
-        if not resume:
+        if not resume or not resume.file:
             raise Http404("No active resume found")
 
-        file_path = resume.file.path
-        with open(file_path, 'rb') as f:
-            file_data = f.read()
+        # For Cloudinary, use the URL to download the file
+        file_url = resume.file.url
 
-        # Determine the file type
-        content_type, _ = mimetypes.guess_type(file_path)
-        if content_type is None:
-            content_type = 'application/octet-stream'
+        # Download the file from Cloudinary
+        response_from_cloudinary = requests.get(file_url)
+        response_from_cloudinary.raise_for_status()
 
-        response = HttpResponse(file_data, content_type=content_type)
+        # Create response with the file data
+        response = HttpResponse(
+            response_from_cloudinary.content,
+            content_type='application/pdf'  # Assuming PDF
+        )
         response['Content-Disposition'] = f'attachment; filename="Vedang_Deshmukh_Resume.pdf"'
         return response
 
-    except Exception as e:
+    except requests.RequestException as e:
         messages.error(request, 'Resume download failed. Please try again later.')
+        return redirect('home')
+    except Exception as e:
+        messages.error(request, 'Resume not available at the moment.')
         return redirect('home')
 
 def skills_api(request):
