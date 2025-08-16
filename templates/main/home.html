@@ -110,7 +110,7 @@
               <i class="{{ skill.icon }} me-2"></i>
             {% endif %}
             {{ skill.name }}
-            <span class="proficiency-indicator">{{ skill.proficiency }}%</span>
+            {% comment %} <span class="proficiency-indicator">{{ skill.proficiency }}%</span> {% endcomment %}
           </span>
         </div>
       {% empty %}

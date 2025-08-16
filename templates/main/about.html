@@ -75,13 +75,13 @@
                         <h5 class="skill-name mb-3">{{ skill.name }}</h5>
                         <div class="proficiency-badge">
                             {% if skill.proficiency >= 90 %}
-                                <span class="badge bg-success fs-6 px-3 py-2">Expert - {{ skill.proficiency }}%</span>
+                                <span class="badge bg-success fs-6 px-3 py-2"></span>
                             {% elif skill.proficiency >= 70 %}
-                                <span class="badge bg-primary fs-6 px-3 py-2">Advanced - {{ skill.proficiency }}%</span>
+                                <span class="badge bg-primary fs-6 px-3 py-2"></span>
                             {% elif skill.proficiency >= 50 %}
-                                <span class="badge bg-warning fs-6 px-3 py-2">Intermediate - {{ skill.proficiency }}%</span>
+                                <span class="badge bg-warning fs-6 px-3 py-2"></span>
                             {% else %}
-                                <span class="badge bg-info fs-6 px-3 py-2">Beginner - {{ skill.proficiency }}%</span>
+                                <span class="badge bg-info fs-6 px-3 py-2">%</span>
                             {% endif %}
                         </div>
                         <div class="skill-description mt-3">

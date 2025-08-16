@@ -94,6 +94,7 @@ class Resume(models.Model):
         folder='portfolio/documents',
         use_filename=True,
         unique_filename=True,
+
     )
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
     uploaded_at = models.DateTimeField(default=timezone.now)
@@ -123,7 +124,8 @@ class Resume(models.Model):
                     self.file.public_id,
                     resource_type='raw',
                     flags='attachment',
-                    secure=True
+                    secure=True,
+                    sign_url=True
                 )
                 return url
 
@@ -151,7 +153,8 @@ class Resume(models.Model):
                 url, options = cloudinary_url(
                     self.file.public_id,
                     resource_type='raw',
-                    secure=True
+                    secure=True,
+                    sign_url=True
                 )
                 return url
             elif hasattr(self.file, 'url'):
