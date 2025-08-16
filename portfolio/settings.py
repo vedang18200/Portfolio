@@ -1,4 +1,4 @@
-# portfolio/settings.py - COMPLETE VERSION WITH HTTPS FIX
+# portfolio/settings.py - FIXED VERSION FOR PERSISTENT CLOUDINARY STORAGE
 import os
 from pathlib import Path
 from decouple import config
@@ -77,7 +77,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# Static files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 if os.path.exists(BASE_DIR / 'static'):
@@ -85,27 +85,30 @@ if os.path.exists(BASE_DIR / 'static'):
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Cloudinary configuration - UPDATED WITH HTTPS
+# CLOUDINARY CONFIGURATION - CRITICAL FOR PERSISTENT STORAGE
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
     'API_KEY': config('CLOUDINARY_API_KEY', default=''),
     'API_SECRET': config('CLOUDINARY_API_SECRET', default=''),
-    'SECURE': True,  # IMPORTANT: Forces HTTPS URLs
+    'SECURE': True,  # Forces HTTPS URLs
 }
 
-# Configure Cloudinary with HTTPS
+# Configure Cloudinary globally
 cloudinary.config(
     cloud_name=config('CLOUDINARY_CLOUD_NAME', default=''),
     api_key=config('CLOUDINARY_API_KEY', default=''),
     api_secret=config('CLOUDINARY_API_SECRET', default=''),
-    secure=True  # IMPORTANT: Forces HTTPS URLs
+    secure=True  # Forces HTTPS URLs
 )
 
+# CRITICAL: Use Cloudinary for media storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Local media for dev (optional)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Remove local media storage to prevent confusion
+# MEDIA_URL and MEDIA_ROOT should not be used when using Cloudinary
+# Comment out or remove these lines:
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -129,28 +132,26 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-import os
 import sys
 
 # Force non-interactive mode for migrations in production
 if not DEBUG or 'migrate' in sys.argv or 'makemigrations' in sys.argv:
-    # Override Django's migration questioner to be non-interactive
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings')
-
-    # Set environment variable to force non-interactive mode
     os.environ['DJANGO_SUPERUSER_PASSWORD'] = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'defaultpassword')
 
-# Migration settings to avoid prompts
-MIGRATION_MODULES = {
-    # Specify any custom migration paths if needed
+# Logging configuration to debug Cloudinary issues
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'cloudinary': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
+        },
+    },
 }
-
-# Ensure non-interactive questioner is used
-if 'makemigrations' in sys.argv:
-    # Force non-interactive mode
-    sys.argv.extend(['--noinput'])
-
-if 'migrate' in sys.argv:
-    # Force non-interactive mode
-    if '--noinput' not in sys.argv:
-        sys.argv.append('--noinput')
