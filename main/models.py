@@ -85,17 +85,24 @@ class Project(models.Model):
             return self.image.url
         return None
 
+
 class Resume(models.Model):
     title = models.CharField(max_length=100, default="My Resume")
 
-    # Fixed CloudinaryField for documents
+    # FIXED: Properly configured CloudinaryField for documents
     file = CloudinaryField(
-        'raw',
-        resource_type='raw',
+        'raw',  # This is correct for documents
+        resource_type='raw',  # Critical for non-image files
         folder='portfolio/documents',
         allowed_formats=['pdf', 'doc', 'docx'],
         use_filename=True,
         unique_filename=True,
+        # Add these options for better document handling
+        options={
+            'resource_type': 'raw',
+            'use_filename': True,
+            'unique_filename': True,
+        }
     )
 
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
@@ -112,6 +119,37 @@ class Resume(models.Model):
             # Set all other resumes to inactive
             Resume.objects.filter(is_active=True).update(is_active=False)
         super().save(*args, **kwargs)
+
+    # ADD: Method to get proper download URL
+    def get_download_url(self):
+        """Get a proper download URL for the resume"""
+        if self.file:
+            from cloudinary.utils import cloudinary_url
+
+            # Generate URL with download flag
+            url, options = cloudinary_url(
+                self.file.public_id,
+                resource_type='raw',
+                flags='attachment',  # Forces download
+                format=self.file.format or 'pdf'  # Ensure proper format
+            )
+            return url
+        return None
+
+    # ADD: Method to get view URL (for preview)
+    def get_view_url(self):
+        """Get a URL for viewing the resume in browser"""
+        if self.file:
+            from cloudinary.utils import cloudinary_url
+
+            url, options = cloudinary_url(
+                self.file.public_id,
+                resource_type='raw',
+                # Don't force attachment for viewing
+            )
+            return url
+        return None
+
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)

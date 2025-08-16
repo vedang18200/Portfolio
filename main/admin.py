@@ -109,20 +109,36 @@ class ProjectAdmin(admin.ModelAdmin):
             messages.error(request, f'Error saving project image: {str(e)}')
             logger.error(f'Project image save error: {str(e)}')
 
+
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'is_active', 'file_link', 'file_url_debug', 'uploaded_at']
+    list_display = ['title', 'is_active', 'file_link', 'download_link', 'file_url_debug', 'uploaded_at']
     list_filter = ['is_active', 'uploaded_at']
     fields = ['title', 'file', 'is_active']
 
     def file_link(self, obj):
+        """Link to view the resume"""
         if obj.file:
-            return format_html(
-                '<a href="{}" target="_blank">📄 View Resume</a>',
-                obj.file.url
-            )
+            view_url = obj.get_view_url()
+            if view_url:
+                return format_html(
+                    '<a href="{}" target="_blank">👁️ View Resume</a>',
+                    view_url
+                )
         return "No file"
-    file_link.short_description = 'Resume File'
+    file_link.short_description = 'View File'
+
+    def download_link(self, obj):
+        """Link to download the resume"""
+        if obj.file:
+            download_url = obj.get_download_url()
+            if download_url:
+                return format_html(
+                    '<a href="{}" target="_blank">📥 Download Resume</a>',
+                    download_url
+                )
+        return "No file"
+    download_link.short_description = 'Download File'
 
     def file_url_debug(self, obj):
         """Debug field to show the actual URL being stored"""
@@ -135,8 +151,9 @@ class ResumeAdmin(admin.ModelAdmin):
         try:
             super().save_model(request, obj, form, change)
             if obj.file:
-                messages.success(request, f'Resume saved successfully. URL: {obj.file.url}')
-                logger.info(f'Resume saved: {obj.file.url}')
+                download_url = obj.get_download_url()
+                messages.success(request, f'Resume saved successfully. Download URL: {download_url}')
+                logger.info(f'Resume saved: {download_url}')
         except Exception as e:
             messages.error(request, f'Error saving resume: {str(e)}')
             logger.error(f'Resume save error: {str(e)}')
