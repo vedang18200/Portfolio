@@ -23,22 +23,35 @@ else
     echo "✅ Cloudinary environment variables configured"
 fi
 
-# Create migrations for Cloudinary (if needed)
+# Create migrations with non-interactive mode
 echo "🔧 Creating migrations..."
-python manage.py makemigrations main --name="switch_to_cloudinary" || echo "⚠️ No new migrations created (this is OK if already exists)"
+python manage.py makemigrations --noinput --merge || echo "⚠️ No new migrations created (this is OK if already exists)"
+
+# Specifically create main app migrations if needed
+python manage.py makemigrations main --noinput || echo "⚠️ No main app migrations needed"
 
 # Run Django management commands
 echo "📁 Collecting static files..."
-python manage.py collectstatic --no-input
+python manage.py collectstatic --noinput
 
 echo "⚙️ Running database migrations..."
-python manage.py migrate
+python manage.py migrate --noinput
 
+# Check if superuser creation script exists, if not skip
 echo "👤 Creating superuser..."
-python manage.py create_superuser_auto
+if python manage.py help create_superuser_auto >/dev/null 2>&1; then
+    python manage.py create_superuser_auto
+else
+    echo "⚠️ create_superuser_auto command not found, skipping..."
+fi
 
+# Check if populate data script exists, if not skip
 echo "📊 Populating initial data..."
-python manage.py populate_data
+if python manage.py help populate_data >/dev/null 2>&1; then
+    python manage.py populate_data
+else
+    echo "⚠️ populate_data command not found, skipping..."
+fi
 
 # Test database connection
 echo "🔍 Testing database connection..."

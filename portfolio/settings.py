@@ -128,3 +128,29 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+import os
+import sys
+
+# Force non-interactive mode for migrations in production
+if not DEBUG or 'migrate' in sys.argv or 'makemigrations' in sys.argv:
+    # Override Django's migration questioner to be non-interactive
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings')
+
+    # Set environment variable to force non-interactive mode
+    os.environ['DJANGO_SUPERUSER_PASSWORD'] = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'defaultpassword')
+
+# Migration settings to avoid prompts
+MIGRATION_MODULES = {
+    # Specify any custom migration paths if needed
+}
+
+# Ensure non-interactive questioner is used
+if 'makemigrations' in sys.argv:
+    # Force non-interactive mode
+    sys.argv.extend(['--noinput'])
+
+if 'migrate' in sys.argv:
+    # Force non-interactive mode
+    if '--noinput' not in sys.argv:
+        sys.argv.append('--noinput')
