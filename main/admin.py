@@ -1,4 +1,4 @@
-# main/admin.py - Enhanced with debugging
+# main/admin.py - Enhanced with debugging (Updated Skills section)
 from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib import messages
@@ -44,22 +44,16 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'proficiency', 'is_featured', 'proficiency_bar']
+    # Removed 'proficiency_bar' from list_display
+    list_display = ['name', 'category', 'proficiency', 'is_featured']
     list_filter = ['category', 'is_featured']
     search_fields = ['name']
     list_editable = ['proficiency', 'is_featured']
     ordering = ['-proficiency', 'name']
 
-    def proficiency_bar(self, obj):
-        color = '#28a745' if obj.proficiency >= 80 else '#ffc107' if obj.proficiency >= 60 else '#dc3545'
-        return format_html(
-            '<div style="width: 100px; background: #ddd; border-radius: 3px;">'
-            '<div style="width: {}%; height: 20px; background: {}; border-radius: 3px; '
-            'text-align: center; color: white; font-size: 12px; line-height: 20px;">{}%</div>'
-            '</div>',
-            obj.proficiency, color, obj.proficiency
-        )
-    proficiency_bar.short_description = 'Level'
+    # Removed the proficiency_bar method entirely
+    # If you want to keep proficiency as a number but just remove the visual bar,
+    # the above configuration is sufficient
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
