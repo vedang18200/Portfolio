@@ -1,4 +1,4 @@
-# main/models.py - COMPLETE VERSION WITH ALL IMPORTS
+# main/models.py - FIXED VERSION - REMOVED secure=True FROM CloudinaryFields
 
 from django.db import models
 from django.urls import reverse
@@ -41,7 +41,7 @@ class Project(models.Model):
     short_description = models.CharField(max_length=250, help_text="Brief description for cards")
     description = models.TextField(help_text="Detailed project description")
 
-    # CloudinaryField with HTTPS
+    # CloudinaryField - REMOVED secure=True parameter
     image = CloudinaryField(
         'image',
         blank=True,
@@ -53,8 +53,7 @@ class Project(models.Model):
             'quality': 'auto',
             'format': 'webp'
         },
-        folder='portfolio/projects',
-        secure=True  # Forces HTTPS
+        folder='portfolio/projects'
     )
 
     github_url = models.URLField(blank=True, validators=[URLValidator()])
@@ -78,13 +77,12 @@ class Project(models.Model):
 class Resume(models.Model):
     title = models.CharField(max_length=100, default="My Resume")
 
-    # CloudinaryField for files with HTTPS
+    # CloudinaryField - REMOVED secure=True parameter
     file = CloudinaryField(
         'raw',
         resource_type='raw',
         folder='portfolio/documents',
-        allowed_formats=['pdf', 'doc', 'docx'],
-        secure=True  # Forces HTTPS
+        allowed_formats=['pdf', 'doc', 'docx']
     )
 
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
@@ -121,7 +119,7 @@ class Profile(models.Model):
     tagline = models.CharField(max_length=200, default="Aspiring AIML Student and Developer")
     bio = models.TextField(default="I am a second-year Computer Science student specializing in Artificial Intelligence and Machine Learning.")
 
-    # CloudinaryField with HTTPS
+    # CloudinaryField - REMOVED secure=True parameter
     profile_image = CloudinaryField(
         'image',
         blank=True,
@@ -134,8 +132,7 @@ class Profile(models.Model):
             'quality': 'auto',
             'format': 'webp'
         },
-        folder='portfolio/profile',
-        secure=True  # Forces HTTPS
+        folder='portfolio/profile'
     )
 
     email = models.EmailField(default="vedangdeshmukh777@gmail.com")
