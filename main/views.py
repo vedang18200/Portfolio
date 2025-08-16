@@ -137,34 +137,12 @@ def contact(request):
     }
     return render(request, 'main/contact.html', context)
 
+from django.shortcuts import redirect
+
 def download_resume(request):
-    """Download the latest active resume - FIXED for Cloudinary"""
-    try:
-        resume = Resume.objects.filter(is_active=True).first()
-        if not resume or not resume.file:
-            raise Http404("No active resume found")
+    drive_link = "https://drive.google.com/file/d/1LMrY57BEEraAV-9EHpVFHzbET38g6rm5/view?usp=sharing"
+    return redirect(drive_link)
 
-        # For Cloudinary, use the URL to download the file
-        file_url = resume.file.url
-
-        # Download the file from Cloudinary
-        response_from_cloudinary = requests.get(file_url)
-        response_from_cloudinary.raise_for_status()
-
-        # Create response with the file data
-        response = HttpResponse(
-            response_from_cloudinary.content,
-            content_type='application/pdf'  # Assuming PDF
-        )
-        response['Content-Disposition'] = f'attachment; filename="Vedang_Deshmukh_Resume.pdf"'
-        return response
-
-    except requests.RequestException as e:
-        messages.error(request, 'Resume download failed. Please try again later.')
-        return redirect('home')
-    except Exception as e:
-        messages.error(request, 'Resume not available at the moment.')
-        return redirect('home')
 
 def skills_api(request):
     """API endpoint for skills data (for animations)"""
