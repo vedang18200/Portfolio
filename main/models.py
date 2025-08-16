@@ -1,9 +1,10 @@
-# main/models.py - FIXED VERSION - REMOVED secure=True FROM CloudinaryFields
+# main/models.py - FIXED VERSION WITH DEFAULT VALUES FOR DATE FIELDS
 
 from django.db import models
 from django.urls import reverse
 from django.core.validators import URLValidator
 from cloudinary.models import CloudinaryField
+from django.utils import timezone
 import uuid
 
 class Skill(models.Model):
@@ -21,7 +22,7 @@ class Skill(models.Model):
     proficiency = models.IntegerField(default=50, help_text="Proficiency percentage (0-100)")
     icon = models.CharField(max_length=50, blank=True, help_text="Font Awesome icon class")
     is_featured = models.BooleanField(default=False, help_text="Show on main page")
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
 
     class Meta:
         ordering = ['-proficiency', 'name']
@@ -62,7 +63,7 @@ class Project(models.Model):
     status = models.CharField(max_length=20, choices=PROJECT_STATUS, default='completed')
     is_featured = models.BooleanField(default=False, help_text="Show on main page")
     order = models.PositiveIntegerField(default=0, help_text="Display order")
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -86,7 +87,7 @@ class Resume(models.Model):
     )
 
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
 
     class Meta:
         ordering = ['-uploaded_at']
@@ -106,7 +107,7 @@ class ContactMessage(models.Model):
     subject = models.CharField(max_length=200)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
 
     class Meta:
         ordering = ['-created_at']
@@ -140,7 +141,7 @@ class Profile(models.Model):
     linkedin_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
     location = models.CharField(max_length=100, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
