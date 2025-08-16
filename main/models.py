@@ -47,10 +47,9 @@ class Project(models.Model):
         'image',
         blank=True,
         null=True,
-        # Remove transformation from here - it should be applied at template level
         folder='portfolio/projects',
-        use_filename=True,  # Preserve original filename
-        unique_filename=True,  # Ensure unique names to avoid conflicts
+        use_filename=True,
+        unique_filename=True,
     )
 
     github_url = models.URLField(blank=True, validators=[URLValidator()])
@@ -71,7 +70,6 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('project_detail', kwargs={'pk': self.pk})
 
-    # Add method to get transformed image URL
     def get_image_url(self, transformation=None):
         """Get image URL with optional transformation"""
         if self.image:
@@ -91,18 +89,11 @@ class Resume(models.Model):
 
     # FIXED: Properly configured CloudinaryField for documents
     file = CloudinaryField(
-        'raw',  # This is correct for documents
-        resource_type='raw',  # Critical for non-image files
+        'raw',
+        resource_type='raw',
         folder='portfolio/documents',
-        allowed_formats=['pdf', 'doc', 'docx'],
         use_filename=True,
         unique_filename=True,
-        # Add these options for better document handling
-        options={
-            'resource_type': 'raw',
-            'use_filename': True,
-            'unique_filename': True,
-        }
     )
 
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
@@ -120,23 +111,20 @@ class Resume(models.Model):
             Resume.objects.filter(is_active=True).update(is_active=False)
         super().save(*args, **kwargs)
 
-    # ADD: Method to get proper download URL
     def get_download_url(self):
         """Get a proper download URL for the resume"""
         if self.file:
             from cloudinary.utils import cloudinary_url
 
-            # Generate URL with download flag
             url, options = cloudinary_url(
                 self.file.public_id,
                 resource_type='raw',
-                flags='attachment',  # Forces download
-                format=self.file.format or 'pdf'  # Ensure proper format
+                flags='attachment',
+                format=self.file.format or 'pdf'
             )
             return url
         return None
 
-    # ADD: Method to get view URL (for preview)
     def get_view_url(self):
         """Get a URL for viewing the resume in browser"""
         if self.file:
@@ -145,7 +133,6 @@ class Resume(models.Model):
             url, options = cloudinary_url(
                 self.file.public_id,
                 resource_type='raw',
-                # Don't force attachment for viewing
             )
             return url
         return None

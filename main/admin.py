@@ -1,4 +1,4 @@
-# main/admin.py - Enhanced with debugging (Updated Skills section)
+# main/admin.py - Enhanced with debugging (Updated Skills section - NO PROFICIENCY)
 from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib import messages
@@ -44,16 +44,13 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    # Removed 'proficiency_bar' from list_display
-    list_display = ['name', 'category', 'proficiency', 'is_featured']
+    # COMPLETELY REMOVED PROFICIENCY FROM ADMIN INTERFACE
+    exclude = ['proficiency']  # Hide proficiency field from the form
+    list_display = ['name', 'category', 'is_featured']  # Removed proficiency from list
     list_filter = ['category', 'is_featured']
     search_fields = ['name']
-    list_editable = ['proficiency', 'is_featured']
-    ordering = ['-proficiency', 'name']
-
-    # Removed the proficiency_bar method entirely
-    # If you want to keep proficiency as a number but just remove the visual bar,
-    # the above configuration is sufficient
+    list_editable = ['is_featured']  # Removed proficiency from editable fields
+    ordering = ['name']  # Changed ordering since we're not showing proficiency
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
