@@ -109,9 +109,26 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'is_active', 'file_link', 'download_link', 'file_url_debug', 'uploaded_at']
+    list_display = ['title', 'is_active', 'file_info_debug', 'file_link', 'download_link', 'uploaded_at']
     list_filter = ['is_active', 'uploaded_at']
     fields = ['title', 'file', 'is_active']
+
+    def file_info_debug(self, obj):
+        """Show detailed file information for debugging"""
+        if obj.file:
+            info = obj.get_file_info()
+            return format_html(
+                '<div style="font-size: 10px;">'
+                'Public ID: {}<br>'
+                'URL: {}<br>'
+                'File: {}'
+                '</div>',
+                info.get('public_id', 'None'),
+                info.get('url', 'None'),
+                info.get('file_name', 'None')
+            )
+        return "No file"
+    file_info_debug.short_description = 'File Info'
 
     def file_link(self, obj):
         """Link to view the resume"""
@@ -137,20 +154,14 @@ class ResumeAdmin(admin.ModelAdmin):
         return "No file"
     download_link.short_description = 'Download File'
 
-    def file_url_debug(self, obj):
-        """Debug field to show the actual URL being stored"""
-        if obj.file:
-            return format_html('<code style="font-size: 10px;">{}</code>', obj.file.url)
-        return "No URL"
-    file_url_debug.short_description = 'File URL'
-
     def save_model(self, request, obj, form, change):
         try:
             super().save_model(request, obj, form, change)
             if obj.file:
                 download_url = obj.get_download_url()
-                messages.success(request, f'Resume saved successfully. Download URL: {download_url}')
-                logger.info(f'Resume saved: {download_url}')
+                file_info = obj.get_file_info()
+                messages.success(request, f'Resume saved successfully. File info: {file_info}')
+                logger.info(f'Resume saved: {file_info}')
         except Exception as e:
             messages.error(request, f'Error saving resume: {str(e)}')
             logger.error(f'Resume save error: {str(e)}')

@@ -63,17 +63,39 @@
             </h4>
             <div class="row">
                 {% for skill in skills %}
-                <div class="col-lg-6 mb-3">
-                    <div class="skill-item">
-                        <div class="skill-name">
-                            <span>
-                                {% if skill.icon %}<i class="{{ skill.icon }} me-2"></i>{% endif %}
-                                {{ skill.name }}
-                            </span>
-                            <span class="text-primary">{{ skill.proficiency }}%</span>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="skill-card card-dark h-100 p-4 text-center">
+                        <div class="skill-icon mb-3">
+                            {% if skill.icon %}
+                                <i class="{{ skill.icon }} fa-3x text-primary"></i>
+                            {% else %}
+                                <i class="fas fa-cog fa-3x text-primary"></i>
+                            {% endif %}
                         </div>
-                        <div class="progress">
-                            <div class="progress-bar" data-width="{{ skill.proficiency }}" style="width: 0%;"></div>
+                        <h5 class="skill-name mb-3">{{ skill.name }}</h5>
+                        <div class="proficiency-badge">
+                            {% if skill.proficiency >= 90 %}
+                                <span class="badge bg-success fs-6 px-3 py-2">Expert - {{ skill.proficiency }}%</span>
+                            {% elif skill.proficiency >= 70 %}
+                                <span class="badge bg-primary fs-6 px-3 py-2">Advanced - {{ skill.proficiency }}%</span>
+                            {% elif skill.proficiency >= 50 %}
+                                <span class="badge bg-warning fs-6 px-3 py-2">Intermediate - {{ skill.proficiency }}%</span>
+                            {% else %}
+                                <span class="badge bg-info fs-6 px-3 py-2">Beginner - {{ skill.proficiency }}%</span>
+                            {% endif %}
+                        </div>
+                        <div class="skill-description mt-3">
+                            <small class="text-secondary">
+                                {% if skill.proficiency >= 90 %}
+                                    Can mentor others and lead projects
+                                {% elif skill.proficiency >= 70 %}
+                                    Proficient with complex implementations
+                                {% elif skill.proficiency >= 50 %}
+                                    Comfortable with most features
+                                {% else %}
+                                    Learning and gaining experience
+                                {% endif %}
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -82,7 +104,11 @@
         </div>
         {% empty %}
         <div class="text-center">
-            <p class="text-secondary">No skills data available.</p>
+            <div class="card-dark p-5">
+                <i class="fas fa-code fa-3x text-secondary mb-3"></i>
+                <h5>Skills Coming Soon</h5>
+                <p class="text-secondary">Skills will be displayed here once added.</p>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -109,31 +135,179 @@
     border: 4px solid var(--accent-color);
     box-shadow: var(--shadow-glow);
 }
+
+.skill-card {
+    transition: var(--transition-slow);
+    border-radius: var(--border-radius-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.skill-card:hover::before {
+    opacity: 1;
+}
+
+.skill-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), var(--shadow-glow);
+}
+
+.skill-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.skill-icon {
+    position: relative;
+}
+
+.skill-icon i {
+    transition: var(--transition-normal);
+}
+
+.skill-card:hover .skill-icon i {
+    transform: scale(1.1) rotate(5deg);
+    filter: brightness(1.2);
+}
+
+.proficiency-badge .badge {
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+}
+
+.badge.bg-primary {
+    background: var(--gradient-accent) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #fd7e14) !important;
+    color: #000 !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8, #6610f2) !important;
+}
+
+.skill-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.skill-description {
+    font-style: italic;
+}
+
+/* Animation for skill cards */
+@keyframes skillFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.skill-card:nth-child(odd) {
+    animation: skillFloat 3s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+.skill-card:nth-child(even) {
+    animation: skillFloat 3s ease-in-out infinite;
+    animation-delay: 1s;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .skill-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .skill-card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+
+    .skill-icon i {
+        font-size: 2.5rem !important;
+    }
+
+    .proficiency-badge .badge {
+        font-size: 0.85rem !important;
+        padding: 8px 16px !important;
+    }
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .skill-card {
+        animation: none !important;
+    }
+
+    .skill-card:hover {
+        transform: none;
+    }
+}
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate skill bars when they come into view
-    const skillBars = document.querySelectorAll('.progress-bar');
+    // Add staggered animation delay for skill cards
+    const skillCards = document.querySelectorAll('.skill-card');
 
-    const animateSkills = (entries, observer) => {
+    skillCards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+        card.setAttribute('data-aos-delay', index * 100);
+    });
+
+    // Add hover sound effect (optional)
+    skillCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            // You can add a subtle sound effect here if desired
+            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+    });
+
+    // Intersection Observer for animation triggers
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const bar = entry.target.querySelector('.progress-bar');
-                const width = bar.getAttribute('data-width');
-                setTimeout(() => {
-                    bar.style.width = width + '%';
-                }, 200);
-                observer.unobserve(entry.target);
+                entry.target.classList.add('animate-in');
             }
         });
-    };
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
 
-    const observer = new IntersectionObserver(animateSkills);
-    document.querySelectorAll('.skill-item').forEach(skill => {
-        observer.observe(skill);
+    skillCards.forEach(card => {
+        observer.observe(card);
     });
 });
 </script>

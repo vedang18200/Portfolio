@@ -1,5 +1,7 @@
-{% extends 'main/base.html' %} {% block title %}Vedang Deshmukh - AIML Developer
-& Tech Enthusiast{% endblock %} {% block content %}
+{% extends 'main/base.html' %}
+{% block title %}Vedang Deshmukh - AIML Developer & Tech Enthusiast{% endblock %}
+{% block content %}
+
 <!-- Hero Section -->
 <section class="hero-section">
   <div class="hero-bg"></div>
@@ -94,34 +96,27 @@
       <p class="lead text-secondary">Technologies I work with</p>
     </div>
 
-    <div class="row">
+    <!-- Skills as Badges -->
+    <div class="skills-badges-container text-center mb-5" data-aos="fade-up" data-aos-delay="200">
       {% for skill in featured_skills %}
-      <div
-        class="col-lg-3 col-md-4 col-sm-6 mb-4"
-        data-aos="zoom-in"
-        data-aos-delay="{{ forloop.counter0|add:100 }}"
-      >
-        <div class="card-dark p-4 text-center h-100">
-          {% if skill.icon %}
-          <i class="{{ skill.icon }} fa-3x text-primary mb-3"></i>
-          {% else %}
-          <i class="fas fa-cog fa-3x text-primary mb-3"></i>
-          {% endif %}
-          <h5 class="mb-2">{{ skill.name }}</h5>
-          <div class="progress mb-2" style="height: 6px">
-            <div
-              class="progress-bar skill-progress"
-              data-width="{{ skill.proficiency }}"
-              style="width: 0%"
-            ></div>
-          </div>
-          <small class="text-secondary">{{ skill.proficiency }}%</small>
+        <div class="skill-badge-wrapper" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:100 }}">
+          <span class="skill-badge
+            {% if skill.proficiency >= 90 %}expert
+            {% elif skill.proficiency >= 70 %}advanced
+            {% elif skill.proficiency >= 50 %}intermediate
+            {% else %}beginner
+            {% endif %}">
+            {% if skill.icon %}
+              <i class="{{ skill.icon }} me-2"></i>
+            {% endif %}
+            {{ skill.name }}
+            <span class="proficiency-indicator">{{ skill.proficiency }}%</span>
+          </span>
         </div>
-      </div>
       {% empty %}
-      <div class="col-12 text-center">
-        <p class="text-secondary">No featured skills available.</p>
-      </div>
+        <div class="text-center">
+          <p class="text-secondary">No featured skills available.</p>
+        </div>
       {% endfor %}
     </div>
 
@@ -294,42 +289,362 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Skills Badges Styling */
+  .skills-badges-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .skill-badge-wrapper {
+    display: inline-block;
+    margin: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .skill-badge-wrapper:nth-child(odd) {
+    animation-delay: 0.5s;
+  }
+
+  .skill-badge-wrapper:nth-child(even) {
+    animation-delay: 1s;
+  }
+
+  .skill-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition-slow);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .skill-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+  }
+
+  .skill-badge:hover::before {
+    left: 100%;
+  }
+
+  .skill-badge > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Proficiency-based colors */
+  .skill-badge.expert {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-color: rgba(40, 167, 69, 0.3);
+  }
+
+  .skill-badge.expert:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  }
+
+  .skill-badge.advanced {
+    background: var(--gradient-accent);
+    color: white;
+    border-color: rgba(0, 212, 255, 0.3);
+  }
+
+  .skill-badge.advanced:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+  }
+
+  .skill-badge.intermediate {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: #000;
+    border-color: rgba(255, 193, 7, 0.3);
+  }
+
+  .skill-badge.intermediate:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+  }
+
+  .skill-badge.beginner {
+    background: linear-gradient(135deg, #17a2b8, #6610f2);
+    color: white;
+    border-color: rgba(23, 162, 184, 0.3);
+  }
+
+  .skill-badge.beginner:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(23, 162, 184, 0.4);
+  }
+
+  .proficiency-indicator {
+    margin-left: 8px;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .skill-badge {
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      margin: 6px;
+    }
+
+    .proficiency-indicator {
+      font-size: 0.75rem;
+      margin-left: 6px;
+      padding: 2px 6px;
+    }
+
+    .skills-badges-container {
+      text-align: center;
+    }
+
+    .skill-badge:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .skill-badge {
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      margin: 4px;
+    }
+
+    .proficiency-indicator {
+      display: none; /* Hide percentage on very small screens */
+    }
+
+    .skills-badges-container {
+      padding: 0 10px;
+    }
+  }
+
+  /* Disable animations for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .skill-badge-wrapper {
+      animation: none !important;
+    }
+
+    .skill-badge:hover {
+      transform: none;
+    }
+
+    .skill-badge::before {
+      display: none;
+    }
+  }
+
+  /* Focus states for accessibility */
+  .skill-badge:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  /* Print styles */
+  @media print {
+    .skill-badge {
+      background: #f8f9fa !important;
+      color: #000 !important;
+      border: 1px solid #dee2e6 !important;
+      box-shadow: none !important;
+    }
+  }
 </style>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+{% block extra_js %}
 <script>
-  // Animate skill progress bars
   document.addEventListener("DOMContentLoaded", function () {
-    const skillBars = document.querySelectorAll(".skill-progress");
+    // Animate skill badges with staggered delays
+    const skillBadges = document.querySelectorAll(".skill-badge-wrapper");
 
-    const animateSkills = () => {
-      skillBars.forEach((bar, index) => {
-        const width = bar.getAttribute("data-width");
-        setTimeout(() => {
-          bar.style.width = width + "%";
-        }, index * 200);
+    skillBadges.forEach((badge, index) => {
+      badge.style.animationDelay = (index * 0.1) + 's';
+      badge.setAttribute('data-aos-delay', index * 50);
+    });
+
+    // Add interactive hover effects
+    skillBadges.forEach(badgeWrapper => {
+      const badge = badgeWrapper.querySelector('.skill-badge');
+
+      badgeWrapper.addEventListener('mouseenter', function() {
+        // Pause animation on hover
+        this.style.animationPlayState = 'paused';
+
+        // Add ripple effect
+        createRipple(badge, event);
       });
-    };
 
-    // Trigger animation when skills section comes into view
-    const skillsSection = document.querySelector(".hero-section");
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          animateSkills();
-          observer.unobserve(entry.target);
-        }
+      badgeWrapper.addEventListener('mouseleave', function() {
+        // Resume animation
+        this.style.animationPlayState = 'running';
       });
     });
 
-    if (skillsSection) {
-      observer.observe(skillsSection);
+    // Create ripple effect function
+    function createRipple(element, event) {
+      const rect = element.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = event.clientX - rect.left - size / 2;
+      const y = event.clientY - rect.top - size / 2;
+
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+        z-index: 0;
+      `;
+
+      element.appendChild(ripple);
+
+      // Remove ripple after animation
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
     }
+
+    // Add ripple animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
     // Typing effect for hero title
     const heroTitle = document.getElementById("hero-title");
     if (heroTitle) {
       const text = heroTitle.textContent;
       typeWriter(heroTitle, text, 150);
+    }
+
+    // Intersection Observer for skill badges
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+
+          // Add sequential animation to badges
+          const badges = entry.target.querySelectorAll('.skill-badge-wrapper');
+          badges.forEach((badge, index) => {
+            setTimeout(() => {
+              badge.style.opacity = '1';
+              badge.style.transform = 'translateY(0) scale(1)';
+            }, index * 100);
+          });
+        }
+      });
+    }, {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe the skills section
+    const skillsSection = document.querySelector('.skills-badges-container');
+    if (skillsSection) {
+      // Initially hide badges
+      const badges = skillsSection.querySelectorAll('.skill-badge-wrapper');
+      badges.forEach(badge => {
+        badge.style.opacity = '0';
+        badge.style.transform = 'translateY(20px) scale(0.8)';
+        badge.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      });
+
+      observer.observe(skillsSection);
+    }
+
+    // Add keyboard navigation for skill badges
+    skillBadges.forEach((badge, index) => {
+      badge.setAttribute('tabindex', '0');
+      badge.setAttribute('role', 'button');
+      badge.setAttribute('aria-label', `Skill: ${badge.textContent.trim()}`);
+
+      badge.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          // Trigger click or show more info
+          this.click();
+        }
+
+        // Arrow key navigation
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          const nextBadge = skillBadges[Math.min(index + 1, skillBadges.length - 1)];
+          nextBadge.focus();
+        }
+
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prevBadge = skillBadges[Math.max(index - 1, 0)];
+          prevBadge.focus();
+        }
+      });
+    });
+
+    // Performance optimization: Reduce animations on low-end devices
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+      skillBadges.forEach(badge => {
+        badge.style.animation = 'none';
+      });
+    }
+
+    // Add touch feedback for mobile devices
+    if ('ontouchstart' in window) {
+      skillBadges.forEach(badge => {
+        badge.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.95)';
+        }, { passive: true });
+
+        badge.addEventListener('touchend', function() {
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 150);
+        }, { passive: true });
+      });
     }
   });
 </script>

@@ -84,10 +84,10 @@ class Project(models.Model):
         return None
 
 
+# Updated Resume model methods with better error handling
+
 class Resume(models.Model):
     title = models.CharField(max_length=100, default="My Resume")
-
-    # FIXED: Properly configured CloudinaryField for documents
     file = CloudinaryField(
         'raw',
         resource_type='raw',
@@ -95,7 +95,6 @@ class Resume(models.Model):
         use_filename=True,
         unique_filename=True,
     )
-
     is_active = models.BooleanField(default=True, help_text="Currently active resume")
     uploaded_at = models.DateTimeField(default=timezone.now)
 
@@ -107,35 +106,76 @@ class Resume(models.Model):
 
     def save(self, *args, **kwargs):
         if self.is_active:
-            # Set all other resumes to inactive
             Resume.objects.filter(is_active=True).update(is_active=False)
         super().save(*args, **kwargs)
 
     def get_download_url(self):
         """Get a proper download URL for the resume"""
-        if self.file:
+        if not self.file:
+            return None
+
+        try:
             from cloudinary.utils import cloudinary_url
 
-            url, options = cloudinary_url(
-                self.file.public_id,
-                resource_type='raw',
-                flags='attachment',
-                format=self.file.format or 'pdf'
-            )
-            return url
+            # Method 1: Try with public_id
+            if hasattr(self.file, 'public_id') and self.file.public_id:
+                url, options = cloudinary_url(
+                    self.file.public_id,
+                    resource_type='raw',
+                    flags='attachment',
+                    secure=True
+                )
+                return url
+
+            # Method 2: Use direct URL if public_id fails
+            elif hasattr(self.file, 'url'):
+                return self.file.url
+
+        except Exception as e:
+            print(f"Error generating download URL: {e}")
+            # Fallback to direct file URL
+            if hasattr(self.file, 'url'):
+                return self.file.url
+
         return None
 
     def get_view_url(self):
         """Get a URL for viewing the resume in browser"""
-        if self.file:
+        if not self.file:
+            return None
+
+        try:
             from cloudinary.utils import cloudinary_url
 
-            url, options = cloudinary_url(
-                self.file.public_id,
-                resource_type='raw',
-            )
-            return url
+            if hasattr(self.file, 'public_id') and self.file.public_id:
+                url, options = cloudinary_url(
+                    self.file.public_id,
+                    resource_type='raw',
+                    secure=True
+                )
+                return url
+            elif hasattr(self.file, 'url'):
+                return self.file.url
+
+        except Exception as e:
+            print(f"Error generating view URL: {e}")
+            if hasattr(self.file, 'url'):
+                return self.file.url
+
         return None
+
+    def get_file_info(self):
+        """Debug method to get file information"""
+        if not self.file:
+            return "No file uploaded"
+
+        info = {
+            'has_file': bool(self.file),
+            'file_name': str(self.file) if self.file else None,
+            'url': getattr(self.file, 'url', None),
+            'public_id': getattr(self.file, 'public_id', None),
+        }
+        return info
 
 
 class ContactMessage(models.Model):
