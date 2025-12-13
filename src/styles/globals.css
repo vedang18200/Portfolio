@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-dark-950 text-gray-100 font-sans;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-600 rounded-full hover:bg-primary-500;
+}
+
+/* Professional gradient text utility with shimmer */
+.gradient-text-pro {
+  background: linear-gradient(90deg, #0ea5e9 0%, #f97316 50%, #0ea5e9 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+.animate-shimmer {
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* Glassmorphism effect */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  @apply transition-all duration-300 ease-in-out;
+}
