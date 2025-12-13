@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { HiOutlineLogOut, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi2';
+import { HiOutlineLogOut, HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLogin() {
@@ -92,7 +92,7 @@ export default function AdminLogin() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
               >
                 {showPassword ? (
-                  <HiOutlineEyeOff className="w-5 h-5" />
+                  <HiOutlineEyeSlash className="w-5 h-5" />
                 ) : (
                   <HiOutlineEye className="w-5 h-5" />
                 )}

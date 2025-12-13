@@ -18,7 +18,7 @@ export default function CTASection() {
             Ready to Work Together?
           </h2>
           <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            I'm open to exciting opportunities and collaborations. Let's discuss how I can help bring your vision to life.
+            I&apos;m open to exciting opportunities and collaborations. Let&apos;s discuss how I can help bring your vision to life.
           </p>
           <Link
             href="/contact"
