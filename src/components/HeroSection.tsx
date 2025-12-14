@@ -28,7 +28,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-dark-950 pt-20 relative overflow-hidden">
+    <section className="h-screen flex items-center justify-center bg-dark-950 relative overflow-hidden">
       {/* Particle Animation Background */}
       <ParticleBackground />
       {/* Background Elements */}
