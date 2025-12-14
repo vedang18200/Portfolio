@@ -17,7 +17,7 @@ const ParticleBackground: React.FC = () => {
         background: { color: "transparent" },
         fpsLimit: 60,
         particles: {
-          number: { value: 40, density: { enable: true, area: 800 } },
+          number: { value: 40, density: { enable: true, value: 800 } },
           color: { value: ["#0ea5e9", "#f97316", "#fff"] },
           shape: { type: "circle" },
           opacity: { value: 0.15, random: true },
