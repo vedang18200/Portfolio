@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { HiOutlineLogOut, HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2';
+import { HiOutlineCog, HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLogin() {
