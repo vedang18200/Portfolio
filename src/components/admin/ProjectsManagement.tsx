@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { uploadProjectImage } from '@/lib/uploadProjectImage';
 import { HiOutlineTrash, HiOutlinePencil, HiOutlinePlus } from 'react-icons/hi2';
 
@@ -179,7 +180,9 @@ export default function ProjectsManagement() {
               <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col gap-2 w-full max-w-xs">
                   {project.image_url && (
-                    <img src={project.image_url} alt="Project" className="rounded-lg mb-2 w-full object-cover max-h-32 border border-dark-700" />
+                    <div className="relative w-full h-32 mb-2 rounded-lg overflow-hidden border border-dark-700">
+                      <Image src={project.image_url} alt="Project" fill className="object-cover" />
+                    </div>
                   )}
                   {editingId === project.id ? (
                     <>

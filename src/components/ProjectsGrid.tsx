@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -66,7 +66,9 @@ export default function ProjectsGrid() {
         >
           <div className="glass rounded-xl p-6 h-full flex flex-col hover:border-primary-400/50 transition-smooth">
             {project.image_url && (
-              <img src={project.image_url} alt={project.title} className="rounded-lg mb-3 w-full object-cover max-h-40 border border-dark-700" />
+              <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden border border-dark-700">
+                <Image src={project.image_url} alt={project.title} fill className="object-cover" />
+              </div>
             )}
             <span className="text-xs px-3 py-1 rounded-full bg-primary-600/30 text-primary-300 w-fit mb-3">
               {project.category}
